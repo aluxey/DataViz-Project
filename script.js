@@ -1,7 +1,7 @@
 // Function to fetch and parse CSV data
 async function fetchData() {
     try {
-        const response = await fetch('csv/data.csv');
+        const response = await fetch('dataSort.csv');
         if (!response.ok) {
             throw new Error('Failed to fetch data');
         }
@@ -36,8 +36,7 @@ function parseData(data, selectedCountries) {
     const rows = data.trim().split('\n').slice(1); // Trim any extra whitespace and remove header
 
     // Initialize arrays to store parsed data
-    const labels = [];
-    const values = [];
+    const dataMap = new Map();
 
     rows.forEach(row => {
         const columns = row.split(',');
@@ -47,11 +46,26 @@ function parseData(data, selectedCountries) {
             const value = parseFloat(columns[14]);
 
             if (selectedCountries.includes(country)) { // Filter by selected countries
-                labels.push(`${country} (${year})`);
-                values.push(value);
+                const label = `${country} (${year})`;
+                if (!dataMap.has(label)) {
+                    dataMap.set(label, value);
+                } else {
+                    dataMap.set(label, dataMap.get(label) + value);
+                }
             }
         }
     });
+
+    // Convert map to arrays and sort by year
+    const sortedData = [...dataMap.entries()]
+        .sort((a, b) => {
+            const yearA = parseInt(a[0].match(/\d+/)[0]); // Extract year from label
+            const yearB = parseInt(b[0].match(/\d+/)[0]);
+            return yearA - yearB;
+        });
+
+    const labels = sortedData.map(entry => entry[0]);
+    const values = sortedData.map(entry => entry[1]);
 
     return { labels, values };
 }
@@ -253,7 +267,7 @@ async function main() {
     if (!csvData) return; // Exit if data fetching failed
 
     // Define countries to filter
-    const selectedCountries = ['Austria', 'France', 'Germany'];
+    const selectedCountries = ['United States', 'Australia'];
 
     const { labels, values } = parseData(csvData, selectedCountries);
 
