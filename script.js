@@ -15,7 +15,7 @@ async function fetchData() {
 
 async function fetchGlobalFood() {
     try {
-        const response = await fetch('csv/global-food.csv');
+        const response = await fetch('global-food.csv');
         if (!response.ok) {
             throw new Error('Failed to fetch data');
         }
@@ -271,7 +271,8 @@ async function main() {
 
     const { labels, values } = parseData(csvData, selectedCountries);
 
-    createDataChart(labels, values, 'dataChart', 'Food Waste in Tonnes');
+    createChart(labels, values, 'chart1', 'Food Waste in Tonnes');
+
 
 
 
