@@ -2,7 +2,6 @@
 
 const ctx1 = document.getElementById('myChart').getContext('2d');
 const ctx2 = document.getElementById('myChart2').getContext('2d');
-const globalFoodChartCtx = document.getElementById('globalFoodChart').getContext('2d');
 
 const myChart = new Chart(ctx1, {
     type: 'bar', 
@@ -39,26 +38,67 @@ const myChart = new Chart(ctx1, {
     }
 });
 
-const myChart2 = new Chart(ctx2, {
-    type: 'line',
-    data: {
-        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-        datasets: [{
-            label: 'Sales',
-            data: [65, 59, 80, 81, 56, 55, 40],
-            fill: false,
-            borderColor: 'rgb(75, 192, 192)',
-            tension: 0.1
-        }]
-    },
-    options: {
-        scales: {
-            y: {
-                beginAtZero: true
+    return { labels, values };
+}
+
+// Function to create a bar chart using Chart.js
+function createChart(labels, data, chartId, chartTitle) {
+    const ctx = document.getElementById(chartId).getContext('2d');
+    const chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: chartTitle,
+                data: data,
+                backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            plugins: {
+                title: {
+                    display: true,
+                    text: chartTitle,
+                    font: {
+                        weight: 'bold'
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        precision: 0
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Countries (Year)'
+                    }
+                }
             }
         }
-    }
-});
+    });
+}
+
+// Main function to fetch data, parse it, and create charts
+async function main() {
+    const csvData = await fetchData();
+    if (!csvData) return; // Exit if data fetching failed
+
+    // Define countries to filter
+    const selectedCountries = ['Austria', 'France', 'Germany'];
+
+    const { labels, values } = parseData(csvData, selectedCountries);
+
+    createChart(labels, values, 'chart1', 'Food Waste in Tonnes');
+}
+
+// Call main function when script is loaded
+main();
 
 
 
