@@ -1,6 +1,10 @@
-const ctx = document.getElementById('myChart').getContext('2d');
-const myChart = new Chart(ctx, {
-    type: 'bar',
+// script.js
+
+const ctx1 = document.getElementById('myChart').getContext('2d');
+const ctx2 = document.getElementById('myChart2').getContext('2d');
+
+const myChart = new Chart(ctx1, {
+    type: 'bar', 
     data: {
         labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
         datasets: [{
@@ -23,6 +27,27 @@ const myChart = new Chart(ctx, {
                 'rgba(255, 159, 64, 1)'
             ],
             borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+
+const myChart2 = new Chart(ctx2, {
+    type: 'line',
+    data: {
+        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+        datasets: [{
+            label: 'Sales',
+            data: [65, 59, 80, 81, 56, 55, 40],
+            fill: false,
+            borderColor: 'rgb(75, 192, 192)',
+            tension: 0.1
         }]
     },
     options: {
