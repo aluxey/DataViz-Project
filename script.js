@@ -1,60 +1,94 @@
-// script.js
+// Function to fetch and parse CSV data
+async function fetchData() {
+    try {
+        const response = await fetch('data.csv');
+        if (!response.ok) {
+            throw new Error('Failed to fetch data');
+        }
+        const data = await response.text();
+        return data;
+    } catch (error) {
+        console.error('Error fetching data:', error);
+        console.log('LOL');
+        return null;
+    }
+}
 
-const ctx1 = document.getElementById('myChart').getContext('2d');
-const ctx2 = document.getElementById('myChart2').getContext('2d');
+// Function to parse CSV data and prepare it for Chart.js
+function parseData(data) {
+    const rows = data.trim().split('\n').slice(1); // Trim any extra whitespace and remove header
 
-const myChart = new Chart(ctx1, {
-    type: 'bar', 
-    data: {
-        labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-        datasets: [{
-            label: '# of Votes',
-            data: [12, 19, 3, 5, 2, 3],
-            backgroundColor: [
-                'rgba(255, 99, 132, 0.2)',
-                'rgba(54, 162, 235, 0.2)',
-                'rgba(255, 206, 86, 0.2)',
-                'rgba(75, 192, 192, 0.2)',
-                'rgba(153, 102, 255, 0.2)',
-                'rgba(255, 159, 64, 0.2)'
-            ],
-            borderColor: [
-                'rgba(255, 99, 132, 1)',
-                'rgba(54, 162, 235, 1)',
-                'rgba(255, 206, 86, 1)',
-                'rgba(75, 192, 192, 1)',
-                'rgba(153, 102, 255, 1)',
-                'rgba(255, 159, 64, 1)'
-            ],
-            borderWidth: 1
-        }]
-    },
-    options: {
-        scales: {
-            y: {
-                beginAtZero: true
+    // Initialize arrays to store parsed data
+    const labels = [];
+    const values = [];
+
+    rows.forEach(row => {
+        const columns = row.split(',');
+        if (columns.length >= 16) { // Ensure data format is correct
+            const country = columns[1].replace(/"/g, ''); // Remove surrounding quotes
+            const year = columns[12].replace(/"/g, '');
+            const value = parseFloat(columns[14]);
+
+            labels.push(`${country} (${year})`);
+            values.push(value);
+        }
+    });
+
+    return { labels, values };
+}
+
+// Function to create a bar chart using Chart.js
+function createChart(labels, data, chartId, chartTitle) {
+    const ctx = document.getElementById(chartId).getContext('2d');
+    const chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: chartTitle,
+                data: data,
+                backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            plugins: {
+                title: {
+                    display: true,
+                    text: chartTitle,
+                    font: {
+                        weight: 'bold'
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        precision: 0
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Countries (Year)'
+                    }
+                }
             }
         }
-    }
-});
+    });
+}
 
-const myChart2 = new Chart(ctx2, {
-    type: 'line',
-    data: {
-        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-        datasets: [{
-            label: 'Sales',
-            data: [65, 59, 80, 81, 56, 55, 40],
-            fill: false,
-            borderColor: 'rgb(75, 192, 192)',
-            tension: 0.1
-        }]
-    },
-    options: {
-        scales: {
-            y: {
-                beginAtZero: true
-            }
-        }
-    }
-});
+// Main function to fetch data, parse it, and create charts
+async function main() {
+    const csvData = await fetchData();
+    if (!csvData) return; // Exit if data fetching failed
+
+    const { labels, values } = parseData(csvData);
+
+    createChart(labels, values, 'chart1', 'Food Waste in Tonnes');
+}
+
+// Call main function when script is loaded
+main();
