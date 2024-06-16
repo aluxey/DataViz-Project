@@ -9,13 +9,12 @@ async function fetchData() {
         return data;
     } catch (error) {
         console.error('Error fetching data:', error);
-        console.log('LOL');
         return null;
     }
 }
 
 // Function to parse CSV data and prepare it for Chart.js
-function parseData(data) {
+function parseData(data, selectedCountries) {
     const rows = data.trim().split('\n').slice(1); // Trim any extra whitespace and remove header
 
     // Initialize arrays to store parsed data
@@ -29,8 +28,10 @@ function parseData(data) {
             const year = columns[12].replace(/"/g, '');
             const value = parseFloat(columns[14]);
 
-            labels.push(`${country} (${year})`);
-            values.push(value);
+            if (selectedCountries.includes(country)) { // Filter by selected countries
+                labels.push(`${country} (${year})`);
+                values.push(value);
+            }
         }
     });
 
@@ -85,7 +86,10 @@ async function main() {
     const csvData = await fetchData();
     if (!csvData) return; // Exit if data fetching failed
 
-    const { labels, values } = parseData(csvData);
+    // Define countries to filter
+    const selectedCountries = ['Austria', 'France', 'Germany'];
+
+    const { labels, values } = parseData(csvData, selectedCountries);
 
     createChart(labels, values, 'chart1', 'Food Waste in Tonnes');
 }
