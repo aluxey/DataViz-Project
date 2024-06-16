@@ -14,7 +14,7 @@ def sort_csv(input_file, output_file):
 
 # Example usage
 if __name__ == '__main__':
-    input_file = 'data.csv'
-    output_file = 'dataSort.csv'
+    input_file = 'csv/data.csv'
+    output_file = 'csv/dataSort.csv'
     sort_csv(input_file, output_file)
     print(f'Sorted data written to {output_file}')

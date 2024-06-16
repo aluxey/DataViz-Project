@@ -32,11 +32,11 @@ header h2 {
 }
 
 .container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-    margin-top: 20px;
+    position: relative;
+    margin: auto;
+    height: 70vh;
+    width: 60vw;
+
 }
 
 canvas {
