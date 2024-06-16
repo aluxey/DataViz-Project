@@ -38,9 +38,6 @@ const myChart = new Chart(ctx1, {
     }
 });
 
-    return { labels, values };
-}
-
 // Function to create a bar chart using Chart.js
 function createChart(labels, data, chartId, chartTitle) {
     const ctx = document.getElementById(chartId).getContext('2d');
@@ -101,35 +98,3 @@ async function main() {
 main();
 
 
-
-
-d3.csv('csv/gobal-food.csv')
-  .then(makeGlobalFoodChart);
-
-function makeGlobalFoodChart(row) {
-    var continentLabels = players.map(function(d) {if (d.Type != "Country") {return d.Country}});
-
-    var chart = new Chart('chart', {
-        type: 'line',
-        data: {
-          labels: ['A', 'B', 'C'],
-          datasets: [
-            {
-              data: [10, 20, 30]
-            }
-          ]
-        }
-      });
-}
-
-const globalFoodChart = new Chart(globalFoodChartCtx, {
-    type: 'line',
-    data: {
-      labels: ['A', 'B', 'C'],
-      datasets: [
-        {
-          data: [10, 20, 30]
-        }
-      ]
-    }
-  });
