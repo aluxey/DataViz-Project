@@ -103,16 +103,6 @@ function parseGlobalFood(data, selectedCountries) {
                     break;
 
               }
-              
-
-            const country = columns[1].replace(/"/g, ''); // Remove surrounding quotes
-            const year = columns[12].replace(/"/g, '');
-            const value = parseFloat(columns[14]);
-
-            if (selectedCountries.includes(country)) { // Filter by selected countries
-                labels.push(`${country} (${year})`);
-                values.push(value);
-            }
         }
     });
 
@@ -173,7 +163,7 @@ function createDataChart(labels, data, chartId, chartTitle) {
 
 // Function to create a bar chart using Chart.js
 function createGlobalFoodChart(label, valuesAfrica, valuesAsia, valuesEurope, valuesNA, valuesOceania, valuesSA, valuesWorld, chartId, chartTitle) {
-    const ctx = document.getElementById(chartId).getContext('2d');
+    const ctxGlobalFood = document.getElementById(chartId).getContext('2d');
 
     const start = 1961;
     const end = 2021;
@@ -220,7 +210,7 @@ function createGlobalFoodChart(label, valuesAfrica, valuesAsia, valuesEurope, va
       ]
     };
 
-    const chart = new Chart(ctx, {
+    const chart = new Chart(ctxGlobalFood, {
             type: 'line',
             data: data,
             options: {
