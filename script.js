@@ -73,7 +73,7 @@ function parseData(data, selectedCountries) {
 
 
 // Function to parse CSV data and prepare it for Chart.js
-function parseGlobalFood(data, selectedCountries) {
+function parseGlobalFood(data) {
     const rows = data.trim().split('\n').slice(1); // Trim any extra whitespace and remove header
 
     // Initialize arrays to store parsed data
