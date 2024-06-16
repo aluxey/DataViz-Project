@@ -129,9 +129,9 @@ function parseGlobalFood(data) {
 
 
 // Function to create a bar chart using Chart.js
-function createDataChart(labels, data, chartId, chartTitle) {
-    const ctxDataChart = document.getElementById(chartId).getContext('2d');
-    const chart = new Chart(ctxDataChart, {
+function createChart(labels, data, chartId, chartTitle) {
+    const ctx = document.getElementById(chartId).getContext('2d');
+    const chart = new Chart(ctx, {
         type: 'bar',
         data: {
             labels: labels,
