@@ -2,6 +2,7 @@
 
 const ctx1 = document.getElementById('myChart').getContext('2d');
 const ctx2 = document.getElementById('myChart2').getContext('2d');
+const globalFoodChartCtx = document.getElementById('globalFoodChart').getContext('2d');
 
 const myChart = new Chart(ctx1, {
     type: 'bar', 
@@ -58,3 +59,37 @@ const myChart2 = new Chart(ctx2, {
         }
     }
 });
+
+
+
+
+d3.csv('csv/gobal-food.csv')
+  .then(makeGlobalFoodChart);
+
+function makeGlobalFoodChart(row) {
+    var continentLabels = players.map(function(d) {if (d.Type != "Country") {return d.Country}});
+
+    var chart = new Chart('chart', {
+        type: 'line',
+        data: {
+          labels: ['A', 'B', 'C'],
+          datasets: [
+            {
+              data: [10, 20, 30]
+            }
+          ]
+        }
+      });
+}
+
+const globalFoodChart = new Chart(globalFoodChartCtx, {
+    type: 'line',
+    data: {
+      labels: ['A', 'B', 'C'],
+      datasets: [
+        {
+          data: [10, 20, 30]
+        }
+      ]
+    }
+  });
