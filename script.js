@@ -27,10 +27,6 @@ async function fetchGlobalFood() {
     }
 }
 
-
-
-
-
 // Function to parse CSV data and prepare it for Chart.js
 function parseData(data, selectedCountries) {
     const rows = data.trim().split('\n').slice(1); // Trim any extra whitespace and remove header
@@ -70,7 +66,36 @@ function parseData(data, selectedCountries) {
     return { labels, values };
 }
 
+function parseDataWaste(data, selectedCountries) {
+    const rows = data.trim().split('\n').slice(1); // Trim any extra whitespace and remove header
 
+    // Initialize arrays to store parsed data
+    const wasteMap = new Map();
+
+    rows.forEach(row => {
+        const columns = row.split(',');
+        if (columns.length >= 16) { // Ensure data format is correct
+            const country = columns[1].replace(/"/g, ''); // Remove surrounding quotes
+            const typeWaste = columns[4].replace(/"/g, '');
+            const value = parseFloat(columns[14]);
+
+            if (selectedCountries.includes(country)) { // Filter by selected countries
+                if (!wasteMap.has(typeWaste)) {
+                    wasteMap.set(typeWaste, value);
+                } else {
+                    wasteMap.set(typeWaste, wasteMap.get(typeWaste) + value);
+                }
+            }
+        }
+    });
+
+    // Convert map to arrays
+    const sortedData = [...wasteMap.entries()];
+    const labels = sortedData.map(entry => entry[0]);
+    const values = sortedData.map(entry => entry[1]);
+
+    return { labels, values };
+}
 
 // Function to parse CSV data and prepare it for Chart.js
 function parseGlobalFood(data) {
@@ -89,8 +114,6 @@ function parseGlobalFood(data) {
     rows.forEach(row => {
         const columns = row.split(',');
         if (columns.length >= 39) { // Ensure data format is correct
-
-
             switch (columns[2]) {
                 case regions[0]:
                     valuesAfrica.push(columns[38]);
@@ -115,18 +138,12 @@ function parseGlobalFood(data) {
                     break;
                 default:
                     break;
-
-              }
+            }
         }
     });
-    
+
     return { regions, valuesAfrica, valuesAsia, valuesEurope, valuesNA, valuesOceania, valuesSA, valuesWorld };
 }
-
-
-
-
-
 
 // Function to create a bar chart using Chart.js
 function createChart(labels, data, chartId, chartTitle) {
@@ -171,9 +188,57 @@ function createChart(labels, data, chartId, chartTitle) {
     });
 }
 
-
-
-
+function pieChartTypeOfWaste(labels, data, chartId, chartTitle) {
+    const ctx = document.getElementById(chartId).getContext('2d');
+    const pieData = {
+        labels: labels,
+        datasets: [{
+            label: chartTitle,
+            data: data,
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(255, 206, 86, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
+                'rgba(255, 159, 64, 0.2)'
+            ],
+            borderColor: [
+                'rgba(255, 99, 132, 1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)'
+            ],
+            borderWidth: 1
+        }]
+    };
+    const options = {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'top',
+            },
+            title: {
+                display: true,
+                text: chartTitle
+            },
+            tooltip: {
+                callbacks: {
+                    label: function(tooltipItem) {
+                        return tooltipItem.label + ': ' + tooltipItem.raw.toLocaleString();
+                    }
+                }
+            }
+        }
+    };
+    new Chart(ctx, {
+        type: 'pie',
+        data: pieData,
+        options: options
+    });
+}
 
 // Function to create a bar chart using Chart.js
 function createGlobalFoodChart(regions, valuesAfrica, valuesAsia, valuesEurope, valuesNA, valuesOceania, valuesSA, valuesWorld, chartId, chartTitle) {
@@ -183,58 +248,60 @@ function createGlobalFoodChart(regions, valuesAfrica, valuesAsia, valuesEurope, 
     const end = 2021;
     const numberList = Array.from({ length: end - start + 1 }, (_, i) => start + i);
 
-    data = {
+    const data = {
         labels: numberList,
-        datasets: [{
-            label: regions[0],
-            data: valuesAfrica,
-            fill: false,
-            borderColor: 'rgba(193,80,101,255)',
-            tension: 0
-        },
-        {
-            label: regions[1],
-            data: valuesAsia,
-            fill: false,
-            borderColor: 'rgba(44,132,101,255)',
-            tension: 0
-        },
-        {
-            label: regions[2],
-            data: valuesEurope,
-            fill: false,
-            borderColor: 'rgba(190,89,21,255)',
-            tension: 0
-        },
-        {
-            label: regions[3],
-            data: valuesNA,
-            fill: false,
-            borderColor: 'rgba(109,62,145,255)',
-            tension: 0
-        },
-        {
-            label: regions[4],
-            data: valuesOceania,
-            fill: false,
-            borderColor: 'rgba(207,10,102,255)',
-            tension: 0
-        },
-        {
-            label: regions[5],
-            data: valuesSA,
-            fill: false,
-            borderColor: 'rgba(24,71,15,255)',
-            tension: 0
-        },
-        {
-            label: regions[6],
-            data: valuesWorld,
-            fill: false,
-            borderColor: 'rgba(40,107,187,255)',
-            tension: 0
-        }]
-    }
+        datasets: [
+            {
+                label: regions[0],
+                data: valuesAfrica,
+                fill: false,
+                borderColor: 'rgba(193,80,101,255)',
+                tension: 0
+            },
+            {
+                label: regions[1],
+                data: valuesAsia,
+                fill: false,
+                borderColor: 'rgba(44,132,101,255)',
+                tension: 0
+            },
+            {
+                label: regions[2],
+                data: valuesEurope,
+                fill: false,
+                borderColor: 'rgba(190,89,21,255)',
+                tension: 0
+            },
+            {
+                label: regions[3],
+                data: valuesNA,
+                fill: false,
+                borderColor: 'rgba(109,62,145,255)',
+                tension: 0
+            },
+            {
+                label: regions[4],
+                data: valuesOceania,
+                fill: false,
+                borderColor: 'rgba(207,10,102,255)',
+                tension: 0
+            },
+            {
+                label: regions[5],
+                data: valuesSA,
+                fill: false,
+                borderColor: 'rgba(24,71,15,255)',
+                tension: 0
+            },
+            {
+                label: regions[6],
+                data: valuesWorld,
+                fill: false,
+                borderColor: 'rgba(40,107,187,255)',
+                tension: 0
+            }
+        ]
+    };
 
     const chart = new Chart(ctxGlobalFood, {
         type: 'line',
@@ -262,7 +329,6 @@ function createGlobalFoodChart(regions, valuesAfrica, valuesAsia, valuesEurope, 
                     type: 'linear',
                     display: true,
                     position: 'right',
-        
                     // grid line settings
                     grid: {
                         drawOnChartArea: false, // only want the grid lines for one axis to show up
@@ -279,25 +345,19 @@ async function main() {
     if (!csvData) return; // Exit if data fetching failed
 
     // Define countries to filter
-    const selectedCountries = ['United States', 'Australia'];
+    const selectedCountries = ['France'];
 
     const { labels, values } = parseData(csvData, selectedCountries);
-
     createChart(labels, values, 'dataChart', 'Food Waste in Tonnes');
 
-
-
-
-    
     const csvGlobalFood = await fetchGlobalFood();
     if (!csvGlobalFood) return; // Exit if data fetching failed
 
-
-
     const { regions, valuesAfrica, valuesAsia, valuesEurope, valuesNA, valuesOceania, valuesSA, valuesWorld } = parseGlobalFood(csvGlobalFood);
-
     createGlobalFoodChart(regions, valuesAfrica, valuesAsia, valuesEurope, valuesNA, valuesOceania, valuesSA, valuesWorld, 'globalFoodChart', 'kilocalorie supply from all foods per day, 1961 to 2021');
-    return;
+
+    const { labels: labelsWaste, values: valuesWaste } = parseDataWaste(csvData, selectedCountries);
+    pieChartTypeOfWaste(labelsWaste, valuesWaste, 'listTypeOfWaste', 'Repartition Type of Waste');
 }
 
 // Call main function when script is loaded
