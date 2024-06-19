@@ -77,15 +77,16 @@ function createSupermarketSalesBarChart(labels, data, chartId, chartTitle) {
             ],
             borderWidth: 1
         }]
-    }
+    };
+    
     const chart = new Chart(ctx, {
         type: 'bar',
         data: datas,
         options: {
             scales: {
                 y: {
-                    beginAtZero: true,
-                },
+                    beginAtZero: true // Ensuring the y-axis starts at zero
+                }
             }
         }
     });

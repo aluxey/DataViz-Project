@@ -195,7 +195,7 @@ async function displayFoodWasteCharts() {
 // Main function to fetch data, parse it, and create charts
 async function main() {
     displayFoodWasteCharts();
-}
+} 
 
 // Call main function when script is loaded
 main();
