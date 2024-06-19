@@ -183,7 +183,7 @@ async function displayFoodWasteCharts() {
     if (!csvData) return; // Exit if data fetching failed
 
     // Define countries to filter
-    const selectedCountries = ['France'];
+    const selectedCountries = ['Spain'];
 
     const { labels, values } = parseFoodWasteData(csvData, selectedCountries);
     createFoodWasteChart(labels, values, 'dataChart', 'Food Waste in Tonnes');
