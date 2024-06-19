@@ -17,8 +17,8 @@ function parseSupermarketSales(data) {
     const rows = data.trim().split('\n').slice(1); // Trim any extra whitespace and remove header
 
     // Initialize arrays to store parsed data
-    const types = ['Health and beauty', 'Electronic accessories', 'Home and lifestyle', 'Sports and travel', 'Food and beverages', 'Fashion accessories'];
-    const values = [0, 0, 0, 0, 0, 0]
+    const types = ['Health and beauty', 'Electronic accessories', 'Home and lifestyle', 'Sports and travel', 'Food and beverages', 'Fashion accessories', ''];
+    const values = [0, 0, 0, 0, 0, 0, 0]
 
     rows.forEach(row => {
         const columns = row.split(',');

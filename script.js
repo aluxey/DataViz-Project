@@ -178,12 +178,12 @@ function createPieChartTypeOfWaste(labels, data, chartId, chartTitle) {
     });
 }
 
-async function displayFoodWasteCharts() {
+async function displayFoodWasteCharts(pays) {
     const csvData = await fetchFoodWasteData();
     if (!csvData) return; // Exit if data fetching failed
 
     // Define countries to filter
-    const selectedCountries = ['Spain'];
+    const selectedCountries = [pays];
 
     const { labels, values } = parseFoodWasteData(csvData, selectedCountries);
     createFoodWasteChart(labels, values, 'dataChart', 'Food Waste in Tonnes');
@@ -194,8 +194,13 @@ async function displayFoodWasteCharts() {
 
 // Main function to fetch data, parse it, and create charts
 async function main() {
-    displayFoodWasteCharts();
-} 
+    displayFoodWasteCharts('Spain');
+}
+
+async function callDisplay() {
+    const text = document.getElementById("searchBar").value;
+    displayFoodWasteCharts(text);
+}
 
 // Call main function when script is loaded
 main();
