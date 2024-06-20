@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Data Visualization with Chart.js</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.0/papaparse.min.js"></script>
+</head>
+
+<body>
+    <header>
+        <h1>DataViz - Project</h1>
+        <h2>Modes de consommation.</h2>
+        <ul>
+            <li>
+                <a href="/main.html">Page 1 : Waste of food</a>
+            </li>
+            <li>
+                <a href="/page2.html">Page 2 : Supermarket sales</a>
+            </li>
+            <li>
+                <a href="/page3.html">Page 3 : Global food consumption</a>
+            </li>
+            <li>
+                <a href="/page4.html">Page 4 : Conclusion</a>
+            </li>
+        </ul>
+    </header>
+    <div class="container">
+        <p>Evolution des principaux indices de la consommation</p>
+        <canvas id="consumptionChart" width="600" height="300"></canvas>
+    </div>
+    
+    <script>
+        // Load CSV data
+        fetch('./csv/global_consumption_trends.csv')
+            .then(response => response.text())
+            .then(data => {
+                Papa.parse(data, {
+                    header: true,
+                    dynamicTyping: true,
+                    complete: function (results) {
+                        createChart(results.data);
+                    }
+                });
+            });
+
+        function createChart(data) {
+            const labels = data.map(row => row.Year);
+            const energyData = data.map(row => row["Global Energy Consumption (Mtoe)"]);
+            const foodData = data.map(row => row["Global Food Consumption (kcal/day/capita)"]);
+            const waterData = data.map(row => row["Global Water Use (km³/year)"]);
+            const co2Data = data.map(row => row["Global CO2 Emissions (MtCO2)"]);
+
+            const ctx = document.getElementById('consumptionChart').getContext('2d');
+            const chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Energy Consumption (Mtoe)',
+                            data: energyData,
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                            fill: false,
+                            yAxisID: 'y-axis-1',
+                        },
+                        {
+                            label: 'Food Consumption (kcal/day/capita)',
+                            data: foodData,
+                            borderColor: 'rgba(255, 159, 64, 1)',
+                            backgroundColor: 'rgba(255, 159, 64, 0.2)',
+                            fill: false,
+                            yAxisID: 'y-axis-2',
+                        },
+                        {
+                            label: 'Water Use (km³/year)',
+                            data: waterData,
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                            fill: false,
+                            yAxisID: 'y-axis-1',
+                        },
+                        {
+                            label: 'CO2 Emissions (MtCO2)',
+                            data: co2Data,
+                            borderColor: 'rgba(255, 99, 132, 1)',
+                            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                            fill: false,
+                            yAxisID: 'y-axis-3',
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        yAxes: [
+                            {
+                                id: 'y-axis-1',
+                                type: 'linear',
+                                position: 'left',
+                                ticks: {
+                                    beginAtZero: true
+                                },
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: 'Energy (Mtoe) / Water (km³/year)'
+                                }
+                            },
+                            {
+                                id: 'y-axis-2',
+                                type: 'linear',
+                                position: 'right',
+                                ticks: {
+                                    beginAtZero: true
+                                },
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: 'Food (kcal/day/capita)'
+                                }
+                            },
+                            {
+                                id: 'y-axis-3',
+                                type: 'linear',
+                                position: 'right',
+                                ticks: {
+                                    beginAtZero: true
+                                },
+                                gridLines: {
+                                    drawOnChartArea: false
+                                },
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: 'CO2 (MtCO2)'
+                                }
+                            }
+                        ]
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>
